@@ -4,10 +4,13 @@ import Registration from './pages/Registration'
 import Login from './pages/Login'
 import EmailVerify from './pages/EmailVerify'
 import ResetPassword from './pages/ResetPassword'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
     <div>
+        <ToastContainer />
       <Routes>
         <Route path='/' element={<Registration />} />
         <Route path='/login' element={<Login />} />

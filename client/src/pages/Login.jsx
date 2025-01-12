@@ -1,15 +1,59 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
+import { data, useNavigate } from 'react-router-dom'
+import { AppContent } from '../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Login = () => {
 
+    const navigate = useNavigate()
+
+    const {backendUrl, setIsLoggedin, getUserData} = useContext(AppContent)
+
     const [state, setState] = useState('Sign Up')
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const onSubmitHandler = async (e) => {
+      try {
+        e.preventDefault();
+
+        axios.defaults.withCredentials = true
+
+        if (state === 'Sign Up'){
+          const {data} = await axios.post(backendUrl + '/api/auth/register', {name, email, password})
+
+            if(data.success){
+              setIsLoggedin(true)
+              getUserData()
+              navigate('/')
+            }else{
+              toast.error(data.message)
+            }
+        }else{
+          const {data} = await axios.post(backendUrl + '/api/auth/login', {email, password})
+
+            if(data.success){
+              setIsLoggedin(true)
+              getUserData()
+              navigate('/')
+            }else{
+              toast.error(data.message)
+            }
+        }
+      } catch (error) {
+        toast.error(data.message)
+      }
+    }
 
   return (
     <div className='flex items-center justify-center min-h-screen px-6 
     sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400'>
       <div className='flex gap-3 absolute left-5 sm:left-20 top-5 cursor-pointer'>
-        <img src={assets.logo} alt='auth' className='w-15 h-10 sm:w-23 mt-1' />
+        <img onClick={() => navigate('/')} src={assets.logo} alt='' 
+        className='w-15 h-10 sm:w-23 mt-1' />
         <h1 className='font-outfit text-3xl font-bold mt-1'>auth</h1>
       </div>
       <div className='bg-slate-900 p-10 rounded-lg shadow-lg w-full 
@@ -22,23 +66,56 @@ const Login = () => {
           {state === 'Sign Up' ? 'create your account' : 'Login to your account!'}
         </p>
 
-        <form>
+        <form onSubmit={onSubmitHandler}>
+          {state === 'Sign Up' && (
+            <div className='mb-4 flex items-center w-full px-5 py-2.5
+            rounded-full bg-[#333A5C]'>
+              <img src={assets.person_icon} alt='' className='w-6 h-6 mr-2' />
+              <input onChange={e => setName(e.target.value)} value={name} 
+              className='bg-transparent outline-none' type='text' placeholder='Full Name' required />
+            </div>
+          )}
+
           <div className='mb-4 flex items-center w-full px-5 py-2.5
           rounded-full bg-[#333A5C]'>
-            <img className='w-6 h-6 mr-2' src={assets.person_icon} alt='' />
-            <input className='bg-transparent outline-none' type='text' placeholder='Full Name' required />
+            <img src={assets.email} alt='' className='w-6 h-6 mr-2' />
+            <input 
+            onChange={e => setEmail(e.target.value)} 
+            value={email} 
+            className='bg-transparent outline-none' type='text' placeholder='Email' required />
           </div>
+
           <div className='mb-4 flex items-center w-full px-5 py-2.5
           rounded-full bg-[#333A5C]'>
-            <img className='w-6 h-6 mr-2' src={assets.email} alt='' />
-            <input className='bg-transparent outline-none' type='text' placeholder='Email' required />
+            <img src={assets.lock_button} alt='' className='w-6 h-6 mr-2' />
+            <input 
+            onChange={e => setPassword(e.target.value)} 
+            value={password} 
+            className='bg-transparent outline-none' type='text' placeholder='Password' required />
           </div>
-          <div className='mb-4 flex items-center w-full px-5 py-2.5
-          rounded-full bg-[#333A5C]'>
-            <img className='w-6 h-6 mr-2' src={assets.lock_button} alt='' />
-            <input className='bg-transparent outline-none' type='text' placeholder='Password' required />
-          </div>
+
+          <p onClick={()=> navigate('/reset-password')}
+          className='mb-4 text-indigo-500 cursor-pointer'>Forgot Password</p>
+
+          <button   
+          className='w-full py-2.5 rounded-full bg-gradient-to-r 
+          from-indigo-500 to-indigo-900 text-white font-medium active:bg-white active:text-indigo-900'>{state}</button>
         </form>
+
+        {state === 'Sign Up' ? (
+          <p className='text-gray-400 text-center text-xs mt-4'>
+            Already have an account?{''}
+              <span onClick={() => setState('Login')} 
+              className='text-blue-400 cursor-pointer underline'> Login here</span>
+          </p>
+        ) 
+        : (
+          <p className='text-gray-400 text-center text-xs mt-4'> Don't have an account?{''}
+              <span onClick={() => setState('Sign Up')} 
+              className='text-blue-400 cursor-pointer underline'> Sign Up</span>
+          </p>
+        )}
+
       </div>
     </div>
   )

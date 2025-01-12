@@ -310,7 +310,7 @@ export const resetPassword = async (req, res) => {
         
     } catch (error) {
         return res.json({
-            success: false, 
+            success: false,
             message: 'Email is required'
         });
     }

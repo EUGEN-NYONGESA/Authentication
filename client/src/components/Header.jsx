@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { assets } from '../assets/assets'
+import { AppContent} from '../context/AppContext'
 
 const Header = () => {
+
+  const {userData} = useContext(AppContent)
+
   return (
     <div className='flex flex-col items-center mt-20 px-4 text-center text-gray-800'>
       <img src={assets.header_icon} alt='' 
       className='w-36 h-36 rounded-full mb-6' />
 
       <h1 className='flex items-center gap-2 text-xl sm:text-3xl 
-      font-medium mb-2'>Hey Developer 
+      font-medium mb-2'>Hey {userData ? userData.name : 'Developer'}! 
         <img className='w-8 aspect-square' 
         src={assets.hand_wave} alt=''/></h1>
 
@@ -19,8 +23,8 @@ const Header = () => {
             Let's start with a quick product tour and we will have you up and 
             running in no time!
         </p>
-        <button className='border border-gray-500  bg-orange-400 rounded-full px-8 py-2.5 
-        hover:bg-white transition-all'>
+        <button className='border border-gray-500 bg-gradient-to-r from-indigo-500 to-indigo-900 text-gray-900 rounded-full px-8 py-2.5 
+        hover:text-white transition-all'>
             Get Started
         </button>
     </div>
