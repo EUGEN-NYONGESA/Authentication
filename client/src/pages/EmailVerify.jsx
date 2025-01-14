@@ -56,6 +56,11 @@ const EmailVerify = () => {
       toast.error(error.message)
     }
   }
+
+  useEffect(()=> {
+    isLoggedin && userData && userData.isAccountVerified && navigate('/')
+  }, [isLoggedin, userData])
+  
   return (
     <div className='flex items-center justify-center min-h-screen bg-gradient-to-br 
     from-blue-200 to-purple-400'>
@@ -69,7 +74,7 @@ const EmailVerify = () => {
         <h1 className='text-white text-2xl font-semibold 
         text-center mb-4'>Email Verify OTP</h1>
         <p className='text-center mb-6 text-indigo-300'>
-          Enter trhe 6-digit code sent to your email
+          Enter the 6-digit code sent to your email
         </p>
         <div className='flex justify-between mb-8' onPaste={handlePaste}>
           {Array(6).fill(0).map((_, index)=>(
@@ -83,7 +88,7 @@ const EmailVerify = () => {
           ))}
         </div>
         <button className='w-full py-3 bg-gradient-to-r from-indigo-500 to-indigo-900 
-        text-white rounded-full'>Confirm Code</button>
+        text-white rounded-full'>Confirm Verification Code</button>
       </form>
     </div>
   )
